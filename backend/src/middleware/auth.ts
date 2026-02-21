@@ -5,11 +5,12 @@ export interface AuthRequest extends Request {
   user?: { publicKey: string }
 }
 
-export const authMiddleware = (req: AuthRequest, res: Response, next: NextFunction) => {
+export const authMiddleware = (req: AuthRequest, res: Response, next: NextFunction): void => {
   const authHeader = req.headers.authorization
 
   if (!authHeader?.startsWith('Bearer ')) {
-    return res.status(401).json({ error: 'No token provided' })
+    res.status(401).json({ error: 'No token provided' })
+    return
   }
 
   const token = authHeader.substring(7)
@@ -19,6 +20,6 @@ export const authMiddleware = (req: AuthRequest, res: Response, next: NextFuncti
     req.user = { publicKey: payload.publicKey }
     next()
   } catch (error) {
-    return res.status(401).json({ error: 'Invalid token' })
+    res.status(401).json({ error: 'Invalid or expired token' })
   }
 }

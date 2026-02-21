@@ -5,13 +5,18 @@ JWT-based authentication protecting write endpoints (create, join, contribute).
 
 ## Setup
 
-1. Add to `.env`:
+1. **Required**: Add to `.env`:
 ```env
-JWT_SECRET=your-secret-key-change-in-production
+JWT_SECRET=<generate-strong-random-secret>
 JWT_EXPIRES_IN=7d
 ```
 
-2. Install dependencies (already done):
+Generate a secure secret:
+```bash
+openssl rand -base64 32
+```
+
+2. Dependencies (already installed):
 ```bash
 npm install jsonwebtoken @types/jsonwebtoken
 ```
@@ -32,6 +37,8 @@ Response:
   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
 }
 ```
+
+**Note**: Public key must be a valid Stellar address (56 chars, starts with 'G')
 
 ### 2. Use Token for Protected Endpoints
 ```bash
@@ -55,6 +62,17 @@ Content-Type: application/json
 - `GET /api/groups/:id` - Get group details
 - `GET /api/groups/:id/members` - Get members
 - `GET /api/groups/:id/transactions` - Get transactions
+
+## Error Responses
+- `401 Unauthorized` - Missing, invalid, or expired token
+- `400 Bad Request` - Invalid public key format
+
+## Security Features
+- ✅ JWT_SECRET required (fails if not set)
+- ✅ Stellar public key validation
+- ✅ Token expiration (default 7 days)
+- ✅ Bearer token authentication
+- ✅ No sensitive error details exposed
 
 ## Implementation Files
 - `backend/src/services/authService.ts` - JWT generation/verification
