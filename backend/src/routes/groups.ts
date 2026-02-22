@@ -15,10 +15,28 @@ const router = Router()
 const controller = new GroupsController()
 
 /**
- * @route   GET /api/groups
- * @desc    List all groups (paginated)
- * @query   page  {number} Page number, 1-indexed (default: 1)
- * @query   limit {number} Items per page, max 100 (default: 20)
+ * @swagger
+ * /api/groups:
+ *   get:
+ *     summary: List all groups
+ *     tags: [Groups]
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: Page number (1-indexed)
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 20
+ *           maximum: 100
+ *         description: Items per page
+ *     responses:
+ *       200:
+ *         description: List of groups
  */
 router.get(
   '/',
